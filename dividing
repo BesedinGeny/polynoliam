@@ -1,0 +1,76 @@
+#include <stdio.h>
+#include <conio.h>
+#define SIZE 111
+int power(int n,int a[SIZE]) {
+	int i,f=1;
+	for (i = n;(f) && (i >= 0); i--) {
+		if (a[i] != 0) { f = 0; }
+	}
+	if (f) return 0;
+	else return i+1;
+}
+
+void zero(int n, int *a) {
+	for (int i = 0; i <= n; i++)
+	{
+		a[i] = 0;
+	}
+}
+int main() {
+	int input[SIZE]/*делимое*/, remainder[SIZE], plus[SIZE], divider[SIZE]/*делитель*/, quotient[SIZE]/*частное*/, i, n, k;
+	//n- максимальный размер input, help, remainder
+	//k- максимальный размер для devider 
+	printf("Input polynomial which will be divided degree: ");
+	scanf_s("%d", &n);
+	printf("\nWrite polynomial which will be devided: ");
+	//input mas
+	for (i = 0; i <= n; i++) {
+		printf("\nInput a%d * x^%d ", i, i);
+		scanf_s("%d", &input[i]);
+		remainder[i] = input[i];
+	}
+	printf("Input polynomial which will be divider degree: ");
+	scanf_s("%d", &k);
+	printf("\nWrite polynomial which will be devided by:  ");
+	//devided mas
+	for (i = 0; i <= k; i++) {
+		printf("\nInput a%d * x^%d ", i, i);
+		scanf_s("%d", &divider[i]);
+	}
+	zero(k, quotient);
+//	int prom = power(n, help) - power(k, devider);
+	while (power(n, remainder) - power(k, divider) >= 0) {
+		quotient[power(n, remainder) - power(k, divider)] = remainder[power(n, remainder)] / divider[power(k, divider)];
+		int t = power(n, remainder) - power(k, divider);
+		zero(n, plus);
+		for (i = power(k, divider); i >= 0; i--) {
+			plus[i + t] = divider[i] * quotient[t];
+			
+		}
+		
+		for (i = power(n, plus); i >= 0; i--) {
+			remainder[i] -= plus[i];
+		}
+	}
+	int j;
+	for (j = n; j > 0; j--) {
+		printf("%d*x^%d+", input[j], j);
+	}
+	printf("%d*x^%d=(", input[j], j);
+	for ( j = n - k ; j > 0; j--) {
+		printf("%d*x^%d+", quotient[j], j);
+	}
+	printf("%d*x^%d)*(", quotient[j], j);
+	for (j = k; j > 0; j--) {
+		printf("%d*x^%d+", divider[j], j);
+	}
+	printf("%d*x^%d)", divider[j], j);
+	if (power(n, remainder) != 0) {
+		printf("+");
+		for (j = power(n, remainder); j > 0; j--) {
+			printf("%d*x^%d+", remainder[j], j);
+		}
+		printf("%d*x^%d", remainder[j], j);
+	}
+	_getch();
+}
